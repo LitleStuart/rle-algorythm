@@ -5,9 +5,9 @@ let isRepeatChars = false;
 let isNotRepeatChars = false;
 let newString = "";
 let notRepeatChars = "";
+var string = fs.readFileSync(process.argv[3]).toString();
 
 if (process.argv[2] == "-encode"){
-    var string = fs.readFileSync(process.argv[3]).toString();
     for (let i = 1; i < string.length; i++) {
         var char = string[i];
         var lastChar = string[i-1];
@@ -16,6 +16,8 @@ if (process.argv[2] == "-encode"){
                 counter -= 1;
                 if (counter == 1){
                     notRepeatChars = notRepeatChars[0];
+                } else {
+                    notRepeatChars = notRepeatChars.substring(0, notRepeatChars.length - 2);
                 }
                 if (counter < 129) {
                     newString += String.fromCharCode(counter + 127) + notRepeatChars;
@@ -31,9 +33,9 @@ if (process.argv[2] == "-encode"){
                 counter = 1;
             }
             isNotRepeatChars = false;
+            isRepeatChars = true;
             notRepeatChars = "";
             counter += 1;
-            isRepeatChars = true;
         } else {
             if (isRepeatChars) {
                 if (counter < 128){
@@ -90,7 +92,6 @@ if (process.argv[2] == "-encode"){
 }
 
 if (process.argv[2] == "-decode") {
-    var string = fs.readFileSync(process.argv[3]).toString();
     for (let i = 0; i < string.length; i++) {
         let index = string.charCodeAt(i);
         if (index < 128) {
