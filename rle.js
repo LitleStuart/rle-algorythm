@@ -18,11 +18,13 @@ if (process.argv[2] == "-encode") {
         if (counter < 129) {
           newString += String.fromCharCode(counter + 127) + notRepeatChars;
         } else {
-          newString +=
-            String.fromCharCode(255) +
-            notRepeatChars.substring(0, 127) +
-            String.fromCharCode(counter - 1) +
-            notRepeatChars.substring(128, counter);
+          for (let i = 0; i <= Math.floor(counter / 128); i++) {
+            let nrc = notRepeatChars.substring(
+              i * 128,
+              i == Math.floor(counter / 128) ? counter % 128 : i * 128 + 128
+            );
+            newString += String.fromCharCode(127 + nrc.length) + nrc;
+          }
         }
         counter = 1;
       }
@@ -39,7 +41,17 @@ if (process.argv[2] == "-encode") {
           if (counter == 128) {
             notRepeatChars += lastChar;
           } else {
-            newString += String.fromCharCode(counter - 127) + lastChar;
+            for (let i = 1; i <= Math.floor(counter / 127); i++) {
+              if (i == Math.floor(counter / 127)) {
+                if (counter % 127 == 1) {
+                  notRepeatChars += lastChar;
+                } else {
+                  newString += String.fromCharCode(counter % 127) + lastChar;
+                }
+              } else {
+                newString += String.fromCharCode(127) + lastChar;
+              }
+            }
           }
         }
         isRepeatChars = false;
@@ -60,21 +72,25 @@ if (process.argv[2] == "-encode") {
     if (counter < 129) {
       newString += String.fromCharCode(counter + 127) + notRepeatChars;
     } else {
-      newString +=
-        String.fromCharCode(255) +
-        notRepeatChars.substring(0, 127) +
-        String.fromCharCode(counter - 1) +
-        notRepeatChars.substring(128, counter);
+      for (let i = 0; i <= Math.floor(counter / 128); i++) {
+        let nrc = notRepeatChars.substring(
+          i * 128,
+          i == Math.floor(counter / 128) ? counter % 128 : i * 128 + 128
+        );
+        newString += String.fromCharCode(127 + nrc.length) + nrc;
+      }
     }
   } else if (isRepeatChars) {
     if (counter < 128) {
       newString += String.fromCharCode(counter) + lastChar;
     } else {
-      newString +=
-        String.fromCharCode(127) +
-        lastChar +
-        String.fromCharCode(counter - 127) +
-        lastChar;
+      for (let i = 0; i <= Math.floor(counter / 127); i++) {
+        if (i < Math.floor(counter / 127)) {
+          newString += String.fromCharCode(127) + lastChar;
+        } else {
+          newString += String.fromCharCode(counter % 127) + lastChar;
+        }
+      }
     }
   }
 
