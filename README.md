@@ -1,4 +1,4 @@
 # rle-algorythm
 
 Launch:
-  node rle.js encode/decode escape/jump input_file output_file
+  node rle.js encode/decode input_file output_file
