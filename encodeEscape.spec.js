@@ -17,8 +17,8 @@ describe("encodeEscape", () => {
   });
 
   it("Кодирование строки, содержащей подстроку с длиной 260 и больше", () => {
-    const result = encodeEscape([{ char: "#", count: 1 }]);
-    expect(result).toBe(`#${String.fromCharCode(0)}#`);
+    const result = encodeEscape([{ char: "#", count: 3 }]);
+    expect(result).toBe(`#${String.fromCharCode(2)}#`);
   });
 
   it("Кодирование строки, содержащей подстроку с длиной 260 и больше", () => {
@@ -26,5 +26,10 @@ describe("encodeEscape", () => {
     expect(result).toBe(
       `#${String.fromCharCode(255)}##${String.fromCharCode(0)}#`
     );
+  });
+
+  it("Кодирование строки, содержащей подстроку с длиной 260 и больше", () => {
+    const result = encodeEscape([{ char: "a", count: 259 }]);
+    expect(result).toBe(`#${String.fromCharCode(255)}a`);
   });
 });
