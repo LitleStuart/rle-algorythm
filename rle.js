@@ -1,55 +1,5 @@
 let fs = require("fs");
-
-function serializeString(str) {
-  const result = [];
-  let char;
-  let lastChar;
-  let counter = 1;
-  for (let i = 1; i < str.length; i++) {
-    char = str[i];
-    lastChar = str[i - 1];
-    if (char == lastChar) {
-      counter += 1;
-    } else {
-      result.push({ char: lastChar, count: counter });
-      counter = 1;
-    }
-  }
-  result.push({ char: char, count: counter });
-  return result;
-}
-
-function encodeEscape(str) {
-  const result = serializeString(str);
-  const MAX_UNICODE = 255;
-  const SHIFT = 4;
-  let newString = "";
-
-  result.forEach((element) => {
-    let count = element.count;
-    let char = element.char;
-    if (char == "#") {
-      for (let i = 0; i < Math.floor(count / (MAX_UNICODE + 1)); i++) {
-        newString += "#" + String.fromCharCode(MAX_UNICODE) + "#";
-        count -= MAX_UNICODE + 1;
-      }
-      if (count != 0) {
-        newString += "#" + String.fromCharCode(count - 1) + "#";
-      }
-    } else {
-      for (let i = 0; i < Math.floor(count / (MAX_UNICODE + SHIFT)); i++) {
-        newString += "#" + String.fromCharCode(MAX_UNICODE) + char;
-        count -= 259;
-      }
-      if (count < SHIFT) {
-        newString += char.repeat(count);
-      } else {
-        newString += "#" + String.fromCharCode(count - SHIFT) + char;
-      }
-    }
-  });
-  return newString;
-}
+const { encodeEscape } = require("./encodeEscape");
 
 function AddNotRepeatChars(notRepeatChars, newString) {
   const MAX_UNICODE = 128;
@@ -181,7 +131,7 @@ const str = fs.readFileSync(process.argv[4]).toString();
 if (process.argv[2] == "encode") {
   let encodedStr;
   if (process.argv[3] == "escape") {
-    encodedStr = encodeEscape(str);
+    encodedStr = encodeEscape(serializeString(str));
   }
   if (process.argv[3] == "jump") {
     encodedStr = encodeJump(str);
