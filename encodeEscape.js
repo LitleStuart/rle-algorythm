@@ -19,7 +19,7 @@ function encodeEscape(result) {
 function encodeSubstring(count, char) {
   return getNumbers(MAX_UNICODE + SHIFT, count).reduce((res, n) => {
     if (n < SHIFT) {
-      return char.repeat(n);
+      return res + char.repeat(n);
     }
     return res + `#${String.fromCharCode(n - SHIFT)}${char}`;
   }, "");
